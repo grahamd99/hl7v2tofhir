@@ -1,0 +1,9 @@
+{
+  "ServiceRequest": {
+    "status": "ORC|1",
+    "intent": "ORC|2",
+    "code.coding[0].code": "OBR|4",
+    "subject.reference": "PID|3",
+    "id": "ORC|2"
+  }
+}
