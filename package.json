@@ -9,6 +9,7 @@
   "author": "Graham Dodsworth",
   "license": "ISC",
   "dependencies": {
-    "fs": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "prettier": "^3.3.3"
   }
 }
