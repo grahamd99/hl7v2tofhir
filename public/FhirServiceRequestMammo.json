@@ -1,0 +1,19 @@
+{
+  "resourceType": "ServiceRequest",
+  "id": "mammography-request-123",
+  "status": "active",
+  "intent": "order",
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "24623002",
+        "display": "Screening mammography"
+      }
+    ],
+    "text": "Screening mammography"
+  },
+  "subject": {
+    "reference": "Patient/123"
+  }
+}
