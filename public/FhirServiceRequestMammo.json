@@ -1,6 +1,20 @@
 {
   "resourceType": "ServiceRequest",
   "id": "mammography-request-123",
+  "extension":  [
+        {
+            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-SourceOfServiceRequest",
+            "valueCodeableConcept": {
+                "coding":  [
+                    {
+                        "system": "http://snomed.info/sct",
+                        "code": "310434002",
+                        "display": "Self-referral to service"
+                    }
+                ]
+            }
+        }
+  ],
   "status": "active",
   "intent": "order",
   "code": {
@@ -15,5 +29,18 @@
   },
   "subject": {
     "reference": "Patient/123"
-  }
+  },
+  "occurrencePeriod": {
+        "start": "2024-03-27T09:00:27+07:00"
+  },
+  "authoredOn": "2024-03-26T16:28:00+07:00",
+  "requester": {
+    "reference": "Practitioner/3ad0687e-f477-468c-afd5-fcc2bf897809",
+    "display": "Dr. Beverly Crusher"
+  },
+  "note": [
+    {
+      "text": "Lorem ipsum looming enamored beyond such fate shroud sought"
+    }
+  ]
 }
