@@ -1,0 +1,31 @@
+{
+    "resourceType": "Bundle",
+    "id": "ff09cccc-2c9b-4238-91d2-66fa6ee845d3",
+    "type": "message",
+    "entry":  [
+        {
+            "fullUrl": "https://fhir.hl7.org.uk/StructureDefinition/UKCore-MessageHeader",
+            "resource": {
+                "resourceType": "MessageHeader",
+                "eventCoding": {
+                    "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+                    "code": "notification",
+                    "display": "Event Notification"
+                },
+                "destination":  [
+                    {
+                        "name": "NHS England",
+                        "endpoint": "${DestinationMeshMailboxId}"
+                    }
+                ],
+                "source": {
+                    "endpoint": "${NhsMeshMailboxId}"
+                },
+                "response": {
+                    "identifier": "b4409d7c-b613-477c-b623-87e60406c2f0",
+                    "code": "ok"
+                }
+            }
+        }
+    ]
+}
