@@ -95,8 +95,8 @@
               "coding": [
                 {
                   "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-EthnicCategoryEngland",
-                  "code": "A",
-                  "display": "White - British"
+                  "code": "Black or Black British - Caribbean",
+                  "display": "Black or Black British - Caribbean"
                 }
               ]
             }
@@ -141,7 +141,7 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/patient-birthTime",
-              "valueDateTime": "2021-02-11T15:39:00+00:00"
+              "valueDateTime": "1972-02-11T15:39:00+00:00"
             }
           ]
         },
