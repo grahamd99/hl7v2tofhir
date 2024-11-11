@@ -7,7 +7,7 @@ const fs = require("fs");
 const main = () => {
   const filePath = path.resolve(
     __dirname,
-    "./public/FhirServiceRequestMammo.json"
+    "./public/FhirBundleServiceRequestMammo.json"
   );
   const mapping = loadMapping();
   fs.readFile(filePath, "utf8", (err, data) => {

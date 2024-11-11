@@ -1,10 +1,11 @@
 {
-  "ServiceRequest": {
-    "authoredOn": "MSH|6",
-    "subject.reference": "PID|3",
-    "status": "ORC|1",
-    "intent": "ORC|2",
-    "code.coding[0].code": "OBR|4",
-    "id": "ORC|2"
+  "Bundle": {
+    "Patient.name[0].family": "PID|5",
+    "Patient.name[0].given[0]": "PID|5",
+    "Patient.identifier[0].value": "PID|3",
+    "ServiceRequest.status": "ORC|1",
+    "ServiceRequest.intent": "ORC|2",
+    "ServiceRequest.authoredOn": "ORC|9",
+    "ServiceRequest.code.coding[0].code": "OBR|4"
   }
 }

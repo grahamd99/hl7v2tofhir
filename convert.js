@@ -1,20 +1,24 @@
-// convert.js
-const fs = require("fs");
+const fs = require('fs');
 
 // Load the mapping configuration
 const loadMapping = () => {
-  const data = fs.readFileSync("mapping.json");
+  const data = fs.readFileSync('mapping.json');
   return JSON.parse(data);
 };
 
-// Convert FHIR ServiceRequest to HL7 v2 ORM message
-const convertToHL7v2 = (fhirServiceRequest, mapping) => {
+
+// Convert FHIR Bundle to HL7 v2 ORM message
+const convertToHL7v2 = (fhirBundle, mapping) => {
   const hl7Segments = {
-    MSH: new Array(20).fill(""), // MSH segment with placeholder fields
-    PID: new Array(20).fill(""), // PID segment with placeholder fields
-    ORC: new Array(12).fill(""), // ORC segment with placeholder fields
-    OBR: new Array(20).fill(""), // OBR segment with placeholder fields
+    MSH: new Array(12).fill(''),
+    PID: new Array(20).fill(''),
+    ORC: new Array(12).fill(''),
+    OBR: new Array(20).fill('')
   };
+
+  // Extract resources from the Bundle
+  const patientResource = fhirBundle.entry.find(e => e.resource.resourceType === 'Patient').resource;
+  const serviceRequestResource = fhirBundle.entry.find(e => e.resource.resourceType === 'ServiceRequest').resource;
 
   // Hardcode MSH segment values, including "ORM^O01" in field 8
   hl7Segments.MSH[1] = "^~&";
@@ -24,42 +28,41 @@ const convertToHL7v2 = (fhirServiceRequest, mapping) => {
   hl7Segments.MSH[5] = "DEPT";
   hl7Segments.MSH[7] = "ORM^O01"; // HL7 field indices are zero-based here
 
-  // Populate HL7 segments based on mapping
-  for (const fhirPath in mapping.ServiceRequest) {
-    const hl7Field = mapping.ServiceRequest[fhirPath];
-    const [segment, fieldIndex] = hl7Field.split("|");
-    var fhirValue = getValueFromFHIR(fhirServiceRequest, fhirPath);
+  // Populate other HL7 segments based on mapping, adjusting paths for Bundle
+  for (const fhirPath in mapping.Bundle) {
+    const hl7Field = mapping.Bundle[fhirPath];
+    const [segment, fieldIndex] = hl7Field.split('|');
+    let fhirValue = getValueFromBundle(fhirBundle, fhirPath);
 
     // Convert datetime if path is "authoredOn"
-    if (fhirPath === "authoredOn" && fhirValue) {
+    if (fhirPath === 'ServiceRequest.authoredOn' && fhirValue) {
       fhirValue = formatDateToHL7(fhirValue);
     }
 
-    // Log for debugging
-    console.log(
-      `Mapping FHIR path "${fhirPath}" with value "${fhirValue}" to HL7 segment "${segment}" at field index ${fieldIndex}`
-    );
+    console.log(`Mapping FHIR path "${fhirPath}" with value "${fhirValue}" to HL7 segment "${segment}" at field index ${fieldIndex}`);
 
-    // Only proceed if value exists in FHIR and segment is defined in hl7Segments
     if (fhirValue && hl7Segments[segment]) {
       hl7Segments[segment][parseInt(fieldIndex, 10) - 1] = fhirValue;
     }
   }
 
-  // Assemble HL7 message string
-  const hl7Message = buildHL7Message(hl7Segments);
-  return hl7Message;
+  return buildHL7Message(hl7Segments);
+};
+
+// Helper function to retrieve value from nested FHIR Bundle using dot notation path
+const getValueFromBundle = (bundle, path) => {
+  const [resourceType, ...restOfPath] = path.split('.');
+  const resource = bundle.entry.find(e => e.resource.resourceType === resourceType);
+  return getValueFromFHIR(resource ? resource.resource : {}, restOfPath.join('.'));
 };
 
 // Helper function to retrieve value from nested FHIR object using dot notation path
 const getValueFromFHIR = (obj, path) => {
   try {
-    return path.split(".").reduce((acc, part) => {
+    return path.split('.').reduce((acc, part) => {
       const arrayMatch = part.match(/(\w+)\[(\d+)\]/);
       if (arrayMatch) {
-        return acc && acc[arrayMatch[1]]
-          ? acc[arrayMatch[1]][parseInt(arrayMatch[2], 10)]
-          : undefined;
+        return acc && acc[arrayMatch[1]] ? acc[arrayMatch[1]][parseInt(arrayMatch[2], 10)] : undefined;
       }
       return acc ? acc[part] : undefined;
     }, obj);
@@ -73,12 +76,13 @@ const getValueFromFHIR = (obj, path) => {
 const formatDateToHL7 = (isoDateTime) => {
   const date = new Date(isoDateTime);
   const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(date.getUTCDate()).padStart(2, "0");
-  const hours = String(date.getUTCHours()).padStart(2, "0");
-  const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
   return `${year}${month}${day}${hours}${minutes}`;
 };
+
 
 // Assemble HL7 segments into a message string
 const buildHL7Message = (segments) => {
@@ -93,7 +97,9 @@ const buildHL7Message = (segments) => {
 
   // Join segments with carriage return separators
   //return [pidSegment, orcSegment, obrSegment].join('\r');
+  //return [mshSegment, pidSegment, orcSegment, obrSegment].join('\r');
   return [final].join("\r");
+
 };
 
 module.exports = { loadMapping, convertToHL7v2 };
