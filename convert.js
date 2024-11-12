@@ -7,7 +7,7 @@ const loadMapping = () => JSON.parse(fs.readFileSync('mapping.json'));
 const loadValueMappings = () => JSON.parse(fs.readFileSync('valueMappings.json'));
 
 // Convert FHIR Bundle to HL7 v2 ORM message
-const convertToHL7v2 = (fhirBundle, mapping, hardcodedValues, valueMappings) => {
+const convertToHL7v2 = (fhirBundle, mapping, valueMappings) => {
   const hl7Segments = {
     MSH: new Array(12).fill(''),
     PID: new Array(20).fill(''),
@@ -25,13 +25,14 @@ const convertToHL7v2 = (fhirBundle, mapping, hardcodedValues, valueMappings) => 
 
     let fhirValue = getValueFromBundle(fhirBundle, fhirPath);
 
-/*
     // Apply value mappings if available
+/*
     if (valueMappings[fhirPath] && valueMappings[fhirPath][fhirValue]) {
       fhirValue = valueMappings[fhirPath][fhirValue];
     }
-*/
 
+    console.log(valueMappings[]);
+*/
     if (fhirPath.includes('+')) {
       // Handle concatenation for multiple FHIR elements
       const paths = fhirPath.split('+').map(path => path.trim());
