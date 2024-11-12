@@ -1,5 +1,5 @@
 // app.js
-const { loadMapping, convertToHL7v2 } = require("./convert");
+const { loadMapping, loadValueMappings, convertToHL7v2 } = require("./convert");
 const path = require("path");
 const fs = require("fs");
 
@@ -10,6 +10,7 @@ const main = () => {
     "./public/FhirBundleServiceRequestMammo.json"
   );
   const mapping = loadMapping();
+  const valueMappings = loadValueMappings();
   fs.readFile(filePath, "utf8", (err, data) => {
     if (err) {
       console.error(err);
@@ -19,7 +20,7 @@ const main = () => {
     const serviceRequest = JSON.parse(data);
     //console.log(data);
 
-    const hl7Message = convertToHL7v2(serviceRequest, mapping);
+    const hl7Message = convertToHL7v2(serviceRequest, mapping, valueMappings);
 
     console.log("Generated HL7 ORM Message:");
     console.log(hl7Message);

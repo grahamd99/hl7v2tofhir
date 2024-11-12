@@ -1,7 +1,6 @@
 {
   "Bundle": {
-    "Patient.name[0].family": "PID|5",
-    "Patient.name[0].given[0]": "PID|5",
+    "Patient.name[0].family + Patient.name[0].given[0]": "PID|5",
     "Patient.identifier[0].value": "PID|3",
     "ServiceRequest.status": "ORC|1",
     "ServiceRequest.intent": "ORC|2",
